@@ -242,7 +242,7 @@ function drawPointer(obj1Name, obj2Name, steps, colorHex) {
         let ra = Math.atan2(y, x) * rad2deg;
         if (ra < 0) ra += 360;
         
-        MarkerMgr.markerEquatorial(ra + "d", dec + "d", true, true, "disk", colorHex, 3.0);
+        MarkerMgr.markerEquatorial(ra + "d", dec + "d", false, true, "disk", colorHex, 3.0);
         core.wait(0.05);
     }
 }

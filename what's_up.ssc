@@ -20,6 +20,7 @@ setSunset()
 core.waitForKeypress();
 // Fast forward to the end of astronomical twilight (evening)
 fastForward(800, getAstTwilight("end"));
+LandscapeMgr.setFlagAtmosphere(false);
 
 core.waitForKeypress();
 // Look North

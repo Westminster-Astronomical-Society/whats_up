@@ -263,7 +263,7 @@ function showConstellation(Const) {
 function goToAltAz(obj, fov=1, duration=4) {
 
     az = obj["azimuth"];
-    alt = obj["altitude"] + fov/5;
+    alt = obj["altitude"] + fov/6;
     if (alt > 90) alt = 90;
     
     // Move to object, initially zoomed out

@@ -1,6 +1,6 @@
 // Name: common objects include file
 // License: Public Domain
-// Author: Matthew Gates, Alexander Wolf
+// Author: Matthew Gates, Alexander Wolf, Chris Bennett
 // Description: Define arrays containing object name (in English).  
 //              Defines: planets, constellations, nebulae
 

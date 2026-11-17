@@ -9,6 +9,7 @@ Description: A Script for What's up in the night sky.
 const dtg = "2026-11-14T16:45:00";
 const loc = { lon: -76.986769, lat: 39.647307, elev: 210, name: "BBNC", planet: "Earth" };
 const landscape = "Bear Branch 2"; // has a fairly clear view of the sky
+const skyculture = "modern"; // modern sky culture has lines, art, and asterisms.
 
 include("settings.inc");
 include("common_objects.inc");

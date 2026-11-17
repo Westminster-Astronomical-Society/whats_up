@@ -51,6 +51,7 @@ function setup() {
     // Set the observer location, landscape, and time
     core.setObserverLocation(loc.lon, loc.lat, loc.elev, loc.name, loc.planet);
     LandscapeMgr.setCurrentLandscapeName(landscape);
+    core.setSkyCulture(skyculture);
     core.setTimeRate(0); 
     core.setDate(dtg, spec = "local");
 

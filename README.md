@@ -2,6 +2,8 @@
 
 This repo contains an example Stellarium script for a "What's Up" presentation in the planetarium. It includes a file with some common objects and a `settings.inc` with some helper functions and settings for the presentation.
 
+These examples require Stellarium 26.2 or later for the `core.waitForKeypress()` function to work.
+
 ## Usage
 
 Place the script in Stellarium's user scripts folder and load it from the scripts tab in the configuration window (F2) or the Scripting Console (F12).

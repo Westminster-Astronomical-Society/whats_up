@@ -61,12 +61,12 @@ function setup() {
  * Toggles the visibility of the azimuthal grid and dims the 
  * colors after a three second delay.
  */
-function showAzGrid() {
+function showAzGrid(delay = 2) {
     GridLinesMgr.setFlagAzimuthalGrid(false);
 
     GridLinesMgr.setColorAzimuthalGrid(BrightGreen);
     GridLinesMgr.setFlagAzimuthalGrid(true);
-    core.wait(3);
+    core.wait(delay);
 
     GridLinesMgr.setFlagAzimuthalGrid(false);
     core.wait(0.5);
@@ -79,12 +79,12 @@ function showAzGrid() {
  * Toggles the visibility of the equatorial grid and dims the 
  * colors after a three second delay.
  */
-function showEqGrid() {
+function showEqGrid(delay = 2) {
     GridLinesMgr.setFlagEquatorGrid(false);
 
     GridLinesMgr.setColorEquatorGrid(BrightPurple);
     GridLinesMgr.setFlagEquatorGrid(true);
-    core.wait(3);
+    core.wait(2);
 
     GridLinesMgr.setFlagEquatorGrid(false);
     core.wait(0.5);

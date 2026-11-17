@@ -1,5 +1,5 @@
 // Name: settings.inc
-// License: Public Domain
+// License: CC0 1.0 Universal Public Domain
 // Author: Christopher Bennett
 // Version: 1.0, 2026-09-09
 // Description: This file contains settings and utility functions for Stellarium scripts

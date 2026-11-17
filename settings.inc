@@ -261,14 +261,18 @@ function showConstellation(Const) {
 // move to a selected object, zoom in and back out
 function goToAltAz(obj, fov=1, duration=4) {
 
+    az = obj["azimuth"];
+    alt = obj["altitude"] + fov/5;
+    if (alt > 90) alt = 90;
+    
     // Move to object, initially zoomed out
-    core.moveToAltAzi(90, obj["azimuth"], duration);
+    core.moveToAltAzi(90, az, duration);
     StelMovementMgr.zoomTo(180, duration);
     core.wait(duration);
     core.waitForKeypress();
 
     // Zoom in (centered 1/5 of the specified field of view above the object)
-    core.moveToAltAzi(obj["altitude"] + fov/5, obj["azimuth"], duration);
+    core.moveToAltAzi(alt, az, duration);
     StelMovementMgr.zoomTo(fov, duration);
     core.wait(duration);
     ConstellationMgr.setFlagLines(false);
@@ -276,7 +280,7 @@ function goToAltAz(obj, fov=1, duration=4) {
     core.waitForKeypress();
 
     // Zoom out
-    core.moveToAltAzi(90, obj["azimuth"], duration);
+    core.moveToAltAzi(90, az, duration);
     StelMovementMgr.zoomTo(180, duration);
     core.wait(duration);
 }

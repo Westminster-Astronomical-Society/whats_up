@@ -197,65 +197,52 @@ function loadImage(params) {
 }
 
 
-// Draws pointer line along a great circle between two RA/Dec coordinates (in degrees)
+// Draws pointer line along a great circle between two named objects
 function drawPointer(obj1Name, obj2Name, steps, colorHex) {
-    var obj1 = core.getObjectInfo(obj1Name);
-    var ra1Deg = obj1["ra"];
-    var dec1Deg = obj1["dec"];
-
-    var obj2 = core.getObjectInfo(obj2Name);
-    var ra2Deg = obj2["ra"];
-    var dec2Deg = obj2["dec"];
-
-    var deg2rad = Math.PI / 180.0;
-    var rad2deg = 180.0 / Math.PI;
-
-    // 1. Convert start and end RA/Dec to 3D unit vectors
-    var ra1 = ra1Deg * deg2rad;
-    var dec1 = dec1Deg * deg2rad;
-    var x1 = Math.cos(dec1) * Math.cos(ra1);
-    var y1 = Math.cos(dec1) * Math.sin(ra1);
-    var z1 = Math.sin(dec1);
-
-    var ra2 = ra2Deg * deg2rad;
-    var dec2 = dec2Deg * deg2rad;
-    var x2 = Math.cos(dec2) * Math.cos(ra2);
-    var y2 = Math.cos(dec2) * Math.sin(ra2);
-    var z2 = Math.sin(dec2);
-
-    // 2. Calculate angular distance (omega) between the two points
-    var dot = x1 * x2 + y1 * y2 + z1 * z2;
-    dot = Math.max(-1.0, Math.min(1.0, dot)); // Clamp for floating-point safety
-    var omega = Math.acos(dot);
-    var sinOmega = Math.sin(omega);
-
-    // 3. Interpolate along the great circle
-    for (var i = 0; i <= steps; i++) {
-        var t = i / steps;
-        var w1, w2;
-
-        if (sinOmega < 1e-6) {
-            // Fallback for points very close together
-            w1 = 1.0 - t;
-            w2 = t;
-        } else {
-            w1 = Math.sin((1.0 - t) * omega) / sinOmega;
-            w2 = Math.sin(t * omega) / sinOmega;
-        }
-
-        var x = w1 * x1 + w2 * x2;
-        var y = w1 * y1 + w2 * y2;
-        var z = w1 * z1 + w2 * z2;
-
-        // 4. Convert interpolated 3D vector back to RA/Dec degrees
-        var dec = Math.asin(Math.max(-1.0, Math.min(1.0, z))) * rad2deg;
-        var ra = Math.atan2(y, x) * rad2deg;
-        if (ra < 0) {
-            ra += 360.0;
-        }
-
+    const deg2rad = Math.PI / 180.0;
+    const rad2deg = 180.0 / Math.PI;
+    
+    // Get object information (contains RA/Dec in degrees)
+    const obj1 = core.getObjectInfo(obj1Name);
+    const obj2 = core.getObjectInfo(obj2Name);
+    
+    // Helper: RA/Dec degrees to 3D unit vector
+    const toVector = (raDeg, decDeg) => {
+        const ra = raDeg * deg2rad;
+        const dec = decDeg * deg2rad;
+        return {
+            x: Math.cos(dec) * Math.cos(ra),
+            y: Math.cos(dec) * Math.sin(ra),
+            z: Math.sin(dec)
+        };
+    };
+    
+    const v1 = toVector(obj1["ra"], obj1["dec"]);
+    const v2 = toVector(obj2["ra"], obj2["dec"]);
+    
+    // Use dot product to calculate angular distance
+    const dot = Math.max(-1, Math.min(1, v1.x * v2.x + v1.y * v2.y + v1.z * v2.z));
+    const omega = Math.acos(dot);
+    const sinOmega = Math.sin(omega);
+    
+    // Interpolate 3D position along the great circle (Slerp)
+    // (https://en.wikipedia.org/wiki/Spherical_linear_interpolation)
+    for (let i = 0; i <= steps; i++) {
+        const t = i / steps;
+        const w1 = sinOmega < 1e-6 ? (1 - t) : Math.sin((1 - t) * omega) / sinOmega;
+        const w2 = sinOmega < 1e-6 ? t : Math.sin(t * omega) / sinOmega;
+        
+        const x = w1 * v1.x + w2 * v2.x;
+        const y = w1 * v1.y + w2 * v2.y;
+        const z = w1 * v1.z + w2 * v2.z;
+        
+        // Convert back to RA/Dec
+        const dec = Math.asin(Math.max(-1, Math.min(1, z))) * rad2deg;
+        let ra = Math.atan2(y, x) * rad2deg;
+        if (ra < 0) ra += 360;
+        
         MarkerMgr.markerEquatorial(ra + "d", dec + "d", true, true, "disk", colorHex, 3.0);
-        core.wait(0.05); // Optional: small delay for animated visual effect
+        core.wait(0.05);
     }
 }
 

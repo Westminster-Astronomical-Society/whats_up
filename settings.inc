@@ -85,7 +85,7 @@ function showEqGrid(delay = 2) {
 
     GridLinesMgr.setColorEquatorGrid(BrightPurple);
     GridLinesMgr.setFlagEquatorGrid(true);
-    core.wait(2);
+    core.wait(delay);
 
     GridLinesMgr.setFlagEquatorGrid(false);
     core.wait(0.5);
@@ -122,61 +122,40 @@ function fastForward(rate, wait = "L", spec = "local") {
 
 // Returns a date string from the Rise/Transit/Set of an object and current date
 function dateFromRTS(timeString) {
-    var date = core.getDate("local");      // "2026-06-29T14:23:51"
-    date = date.substring(0, 10);          // "2026-06-29"
-
-    // Convert "20h39m" -> "20:39:00"
-    var time = timeString.replace("h", ":").replace("m", ":00");
-
+    const date = core.getDate("local").substring(0, 10);
+    const time = timeString.replace("h", ":").replace("m", ":00");
     return date + "T" + time;
 }
 
-// Sets the time to sunrise on current date
-function setSunrise() {
-    var rts = core.getRTS("Sun");
-    var date = dateFromRTS(rts["rise"]);
+// Get Rise/Transit/Set times as date strings
+function getRTS(object, angleDep = 0, event = "rise") {
+    const rts = core.getRTS(object, angleDep);
+    return dateFromRTS(rts[event]);
+}
+
+// Set the time based on Rise/Transit/Set
+function setRTS(object, angleDep = 0, event = "rise") {
+    const date = getRTS(object, angleDep, event);
     core.setDate(date, "local");
 }
 
-// Sets the time to sunset on current date
-function setSunset() {
-    var rts = core.getRTS("Sun");
-    var date = dateFromRTS(rts["set"]);
-    core.setDate(date, "local");
-}
+// Sunrise/Sunset helpers
+function getSunrise() { return getRTS("Sun", 0, "rise"); }
+function setSunrise() { setRTS("Sun", 0, "rise"); }
+function getSunset() { return getRTS("Sun", 0, "set"); }
+function setSunset() { setRTS("Sun", 0, "set"); }
 
-// Sets the time to astronomical twilight (morning or evening) on current date
+// Astronomical twilight helpers
+function getAstTwilightStart() { return getRTS("Sun", -18, "rise"); }
+function setAstTwilightStart() { setRTS("Sun", -18, "rise"); }
+function getAstTwilightEnd() { return getRTS("Sun", -18, "set"); }
+function setAstTwilightEnd() { setRTS("Sun", -18, "set"); }
+
+// Backwards compatibility wrappers
+function getAstSunrise() { return getAstTwilightStart(); }
 function setAstTwilight(which) {
-    var rts = core.getRTS("Sun", -18);
-    if (which === "start") {            //morning
-        var date = dateFromRTS(rts["rise"]);
-        core.setDate(date, "local");
-    } else if (which === "end") {       //evening
-        var date = dateFromRTS(rts["set"]);
-        core.setDate(date, "local");
-    }
-}
-
-// get sunrise on current date
-function getAstSunrise() {
-    var rts = core.getRTS("Sun");
-    return dateFromRTS(rts["rise"]);
-}
-
-// get sunset on current date
-function getSunset() {
-    var rts = core.getRTS("Sun");
-    return dateFromRTS(rts["set"]);
-}
-
-// get astronomical twilight (morning or evening) on current date
-function getAstTwilight(which) {
-    var rts = core.getRTS("Sun", -18);
-    if (which === "start") {            //morning
-        return dateFromRTS(rts["rise"]);
-    } else if (which === "end") {       //evening
-        return dateFromRTS(rts["set"]);
-    }
+    if (which === "start") setAstTwilightStart();
+    else if (which === "end") setAstTwilightEnd();
 }
 
 /**
@@ -262,8 +241,8 @@ function showConstellation(Const) {
 // move to a selected object, zoom in and back out
 function goToAltAz(obj, fov=1, duration=4) {
 
-    az = obj["azimuth"];
-    alt = obj["altitude"] + fov/6;
+    const az = obj["azimuth"];
+    let alt = obj["altitude"] + fov/6;
     if (alt > 90) alt = 90;
     
     // Move to object, initially zoomed out
@@ -272,7 +251,7 @@ function goToAltAz(obj, fov=1, duration=4) {
     core.wait(duration);
     core.waitForKeypress();
 
-    // Zoom in (centered 1/5 of the specified field of view above the object)
+    // Zoom in (centered 1/6 of the specified field of view above the object)
     core.moveToAltAzi(alt, az, duration);
     StelMovementMgr.zoomTo(fov, duration);
     core.wait(duration);

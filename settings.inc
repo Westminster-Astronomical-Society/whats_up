@@ -128,14 +128,14 @@ function dateFromRTS(timeString) {
 }
 
 // Get Rise/Transit/Set times as date strings
-function getRTS(object, angleDep = 0, event = "rise") {
-    const rts = core.getRTS(object, angleDep, event);
-    return dateFromRTS(rts[event]);
+function getRTS(object, angleDep = 0, eventType = "rise") {
+    const rts = core.getRTS(object, angleDep, eventType);
+    return dateFromRTS(rts[eventType]);
 }
 
 // Set the time based on Rise/Transit/Set
-function setRTS(object, angleDep = 0, event = "rise") {
-    const date = getRTS(object, angleDep, event);
+function setRTS(object, angleDep = 0, eventType = "rise") {
+    const date = getRTS(object, angleDep, eventType);
     core.setDate(date, "local");
 }
 
@@ -259,7 +259,6 @@ function goToAltAz(obj, fov=1, duration=4) {
 // wrapper function to go to an object, optionally showing its constellation
 function objectGoTo(name, fov=1, duration=4, Const=true) {
     var obj = core.getObjectInfo(name);
-    // core.output(core.mapToString(obj));
 
     if (Const) {
         showConstellation(obj["iauConstellation"]);

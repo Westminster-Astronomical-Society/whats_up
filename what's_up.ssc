@@ -4,7 +4,6 @@
 // Version: 1.0
 // Description: A Script for What's up in the night sky.
 
-
 const dtg = "2026-11-14T16:45:00";
 const loc = { lon: -76.986769, lat: 39.647307, elev: 210, name: "BBNC", planet: "Earth" };
 const landscape = "Bear Branch 2"; // has a fairly clear view of the sky
@@ -79,7 +78,7 @@ objectGoTo("M15", fov=1, duration=4);
 
 core.waitForKeypress();
 // fast forward until M42 is 20deg above horizon
-fastForward(800, getRTS("M42", angleDep = 20, event = "rise"));
+fastForward(800, getRTS("M42", angleDep = 20, eventType = "rise"));
 
 // M42, with Orion
 objectGoTo("M42", fov=3, duration=4);

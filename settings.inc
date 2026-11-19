@@ -129,7 +129,7 @@ function dateFromRTS(timeString) {
 
 // Get Rise/Transit/Set times as date strings
 function getRTS(object, angleDep = 0, event = "rise") {
-    const rts = core.getRTS(object, angleDep);
+    const rts = core.getRTS(object, angleDep, event);
     return dateFromRTS(rts[event]);
 }
 

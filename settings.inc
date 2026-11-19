@@ -151,13 +151,6 @@ function setAstTwilightStart() { setRTS("Sun", -18, "rise"); }
 function getAstTwilightEnd() { return getRTS("Sun", -18, "set"); }
 function setAstTwilightEnd() { setRTS("Sun", -18, "set"); }
 
-// Backwards compatibility wrappers
-function getAstSunrise() { return getAstTwilightStart(); }
-function setAstTwilight(which) {
-    if (which === "start") setAstTwilightStart();
-    else if (which === "end") setAstTwilightEnd();
-}
-
 /**
  * Loads a sky image layer using a parameter dictionary.
  * Wraps `core.loadSkyImage` and forwards fields from `params`.
@@ -240,10 +233,8 @@ function showConstellation(Const) {
 
 // move to a selected object, zoom in and back out
 function goToAltAz(obj, fov=1, duration=4) {
-
+    const shift = fov/6;
     const az = obj["azimuth"];
-    let alt = obj["altitude"] + fov/6;
-    if (alt > 90) alt = 90;
     
     // Move to object, initially zoomed out
     core.moveToAltAzi(90, az, duration);
@@ -251,8 +242,8 @@ function goToAltAz(obj, fov=1, duration=4) {
     core.wait(duration);
     core.waitForKeypress();
 
-    // Zoom in (centered 1/6 of the specified field of view above the object)
-    core.moveToAltAzi(alt, az, duration);
+    // Zoom in (shift down for dome)
+    core.moveToObject(obj["name"],duration, shift);
     StelMovementMgr.zoomTo(fov, duration);
     core.wait(duration);
     ConstellationMgr.setFlagLines(false);
@@ -268,6 +259,7 @@ function goToAltAz(obj, fov=1, duration=4) {
 // wrapper function to go to an object, optionally showing its constellation
 function objectGoTo(name, fov=1, duration=4, Const=true) {
     var obj = core.getObjectInfo(name);
+    // core.output(core.mapToString(obj));
 
     if (Const) {
         showConstellation(obj["iauConstellation"]);

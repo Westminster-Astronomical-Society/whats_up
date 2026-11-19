@@ -66,7 +66,6 @@ AsterismMgr.deselectAsterisms();
 AsterismMgr.setFlagLines(false);
 core.wait(1);
 
-core.waitForKeypress();
 // Go to the Moon, no constellation
 objectGoTo("Moon", fov=2, duration=4, Const=false);
 
@@ -79,8 +78,8 @@ core.waitForKeypress();
 objectGoTo("M15", fov=1, duration=4);
 
 core.waitForKeypress();
-// fast forward to 10 PM
-fastForward(800, "2026-11-14T22:00:00");
+// fast forward until M42 is 20deg above horizon
+fastForward(800, getRTS("M42", angleDep = 20, event = "rise"));
 
 // M42, with Orion
 objectGoTo("M42", fov=3, duration=4);

@@ -224,15 +224,17 @@ function showConstellation(Const) {
 }
 
 // move to a selected object, zoom in and back out
-function goToAltAz(obj, fov = 1, duration = 4) {
-    const shift = fov / 6;
+function goToAltAz(obj, duration = 4) {
     const az = obj["azimuth"];
 
     // Move to object, initially zoomed out
     core.moveToAltAzi(90, az, duration);
     StelMovementMgr.zoomTo(180, duration);
     core.wait(duration);
-    core.waitForKeypress();
+}
+
+function zoomToObject(obj, fov, duration) {
+    const shift = fov / 6;
 
     // Zoom in (shift down for dome)
     core.moveToObject(obj["name"], duration, shift);
@@ -240,12 +242,6 @@ function goToAltAz(obj, fov = 1, duration = 4) {
     core.wait(duration);
     ConstellationMgr.setFlagLines(false);
     ConstellationMgr.setFlagArt(false);
-    core.waitForKeypress();
-
-    // Zoom out
-    core.moveToAltAzi(90, az, duration);
-    StelMovementMgr.zoomTo(180, duration);
-    core.wait(duration);
 }
 
 // wrapper function to go to an object, optionally showing its constellation
@@ -260,5 +256,12 @@ function objectGoTo(name, fov = 1, duration = 4, Const = true) {
         ConstellationMgr.setFlagArt(false);
     }
 
-    goToAltAz(obj, fov, duration);
+    goToAltAz(obj, duration);
+    core.waitForKeypress();
+
+    zoomToObject(obj, fov, duration);
+    core.waitForKeypress();
+
+    goToAltAz(obj, duration);
+    core.waitForKeypress();
 }

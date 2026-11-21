@@ -240,8 +240,6 @@ function zoomToObject(obj, fov, duration) {
     core.moveToObject(obj["name"], duration, shift);
     StelMovementMgr.zoomTo(fov, duration);
     core.wait(duration);
-    ConstellationMgr.setFlagLines(false);
-    ConstellationMgr.setFlagArt(false);
 }
 
 // wrapper function to go to an object, optionally showing its constellation
@@ -260,6 +258,8 @@ function objectGoTo(name, fov = 1, duration = 4, Const = true) {
     core.waitForKeypress();
 
     zoomToObject(obj, fov, duration);
+    ConstellationMgr.setFlagLines(false);
+    ConstellationMgr.setFlagArt(false);
     core.waitForKeypress();
 
     goToAltAz(obj, duration);

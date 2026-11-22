@@ -1,0 +1,215 @@
+// Name: What's Up in the Night Sky (12 December 2026)
+// License: CC0 1.0 Universal Public Domain
+// Author: Chris Bennett
+// Version: 1.0
+// Description: What's up in the night sky. Constellations and a few notable deep sky objects
+
+const dtg = "2026-12-12T16:45:00";
+const loc = { lon: -76.986769, lat: 39.647307, elev: 210, name: "BBNC", planet: "Earth" };
+const landscape = "Bear Branch 2"; // has a fairly clear view of the sky
+const skyculture = "modern"; // modern sky culture has lines, art, and asterisms.
+
+include("settings.inc");
+include("common_objects.inc");
+
+setup(); // see settings.inc for setup details
+setSunset()
+
+core.waitForKeypress();
+// Fast forward to the end of astronomical twilight (evening)
+fastForward(800, getAstTwilightEnd());
+LandscapeMgr.setFlagAtmosphere(false);
+
+// Solar System
+
+core.waitForKeypress();
+// The Moon is waxing crescent, visible early in the Southwest sky
+objectGoTo("Moon", fov=2, duration=4, Const=false);
+
+core.waitForKeypress();
+// Saturn is visible in the evening in the Southern sky
+objectGoTo("Saturn", fov=.15, duration=4, Const=false);
+
+// The Constellations
+
+core.waitForKeypress();
+// Look North
+core.moveToAltAzi(90, 0, 4);
+core.wait(4);
+
+core.waitForKeypress();
+AsterismMgr.setFlagIsolateAsterismSelected(true);
+AsterismMgr.deselectAsterisms();
+AsterismMgr.setFlagLines(true);
+
+// Show the Big Dipper
+AsterismMgr.selectAsterism("Big Dipper (Plough)");
+core.wait(1);
+
+core.waitForKeypress();
+// Draw a pointer to Polaris
+drawPointer("Dubhe", "Polaris", 40, "#D42A2A");
+core.wait(1);
+
+core.waitForKeypress();
+// Show the Little Dipper
+AsterismMgr.selectAsterism("Little Dipper");
+MarkerMgr.deleteAllMarkers();
+core.wait(1);
+
+core.waitForKeypress();
+// Show the "W"
+AsterismMgr.selectAsterism("W");
+core.wait(1);
+
+// Draw a pointer to Polaris
+drawPointer("Navi", "Polaris", 40, "#D42A2A");
+core.wait(1);
+
+core.waitForKeypress();
+// Clear Pointer lines
+MarkerMgr.deleteAllMarkers();
+core.wait(1);
+
+core.waitForKeypress();
+// Clear Asterisms
+MarkerMgr.deleteAllMarkers();
+AsterismMgr.deselectAsterisms();
+AsterismMgr.setFlagLines(false);
+core.wait(2);
+
+// Show coordinate grid.
+showEqGrid();
+
+// show circumpolar constellations
+ConstellationMgr.setFlagIsolateSelected(true);
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(true);
+ConstellationMgr.setFlagArt(true);
+
+ConstellationMgr.setFlagConstellationPick(false); // true to show them one at a time
+for (var constellation of circumpolar) {
+    core.selectConstellationByName(constellation);
+    core.wait(2);
+}
+
+core.waitForKeypress();
+// Reset constellation selection and flags
+GridLinesMgr.setFlagEquatorGrid(false);
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(false);
+ConstellationMgr.setFlagArt(false);
+
+// Look West
+core.moveToAltAzi(90, 270, 4);
+core.wait(4);
+
+// Show the Summer Triangle. It is setting low in the Western sky
+AsterismMgr.setFlagIsolateAsterismSelected(true);
+AsterismMgr.deselectAsterisms();
+AsterismMgr.setFlagLines(true);
+AsterismMgr.selectAsterism("Summer Triangle");
+core.wait(1);
+
+core.waitForKeypress();
+AsterismMgr.deselectAsterisms();
+AsterismMgr.setFlagLines(false);
+core.wait(1);
+// show Lyra, CYgnus, and Aquila
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(true);
+ConstellationMgr.setFlagArt(true);
+
+var SummerTriangle = ["Lyra", "Cygnus", "Aquila"];
+ConstellationMgr.setFlagConstellationPick(false); // true to show them one at a time
+for (var constellation of SummerTriangle) {
+    core.selectConstellationByName(constellation);
+    core.wait(2);
+}
+
+core.waitForKeypress();
+// Clear constellation selection and flags
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(false);
+ConstellationMgr.setFlagArt(false);
+
+core.waitForKeypress();
+// The Ring Nebula (M57) in Lyra is visible early in the Western sky
+objectGoTo("M57", fov=0.5, duration=4, Const=true);
+
+core.waitForKeypress();
+// Look South
+core.moveToAltAzi(90, 180, 4);
+core.wait(4);
+
+// Show the Great Square of Pegasus. It is high in the Southern sky
+AsterismMgr.setFlagIsolateAsterismSelected(true);
+AsterismMgr.deselectAsterisms();
+AsterismMgr.setFlagLines(true);
+AsterismMgr.selectAsterism("Great Square of Pegasus");
+core.wait(1);
+
+core.waitForKeypress();
+AsterismMgr.deselectAsterisms();
+AsterismMgr.setFlagLines(false);
+core.wait(1);
+
+// Show Pegasus
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(true);
+ConstellationMgr.setFlagArt(true);
+core.selectConstellationByName("Pegasus");
+
+core.waitForKeypress();
+// Show the early constellations
+earlyConstellations = ["Pegasus", "Andromeda", "Triangulum", "Aries", "Pisces", "Cetus", "Aquarius", "Capricornus"];
+ConstellationMgr.setFlagConstellationPick(false); // true to show them one at a time
+for (var constellation of earlyConstellations) {
+    core.selectConstellationByName(constellation);
+    core.wait(2);
+}
+
+core.waitForKeypress();
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(false);
+ConstellationMgr.setFlagArt(false);
+
+core.waitForKeypress();
+// The Andromeda Galaxy (M31) is near the zenith in the Southern sky
+objectGoTo("M31", fov=5, duration=4, Const=true);
+
+// Look East
+core.moveToAltAzi(90, 90, 4);
+core.wait(4);
+
+// Fast forward to 21:00 local time
+fastForward(800, "2026-12-12T21:00:00");
+
+// fast forward until M42 is 20deg above horizon
+// fastForward(800, getRTS("M42", angleDep = 20, eventType = "rise"));
+
+// Show Orion
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(true);
+ConstellationMgr.setFlagArt(true);
+core.selectConstellationByName("Orion");
+
+core.waitForKeypress();
+// Show the late constellations
+lateConstellations = ["Perseus", "Lynx", "Auriga", "Taurus", "Eridanus", "Gemini", "Orion"];
+ConstellationMgr.setFlagConstellationPick(false); // true to show them one at a time
+for (var constellation of lateConstellations) {
+    core.selectConstellationByName(constellation);
+    core.wait(2);
+}
+
+core.waitForKeypress();
+ConstellationMgr.deselectConstellations();
+ConstellationMgr.setFlagLines(false);
+ConstellationMgr.setFlagArt(false);
+
+core.waitForKeypress();
+// The Orion Nebula (M42) in sword of Orion
+objectGoTo("M42", fov=5, duration=4, Const=true);
+
+core.setGuiVisible(true);

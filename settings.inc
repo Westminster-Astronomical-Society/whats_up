@@ -23,7 +23,7 @@ DarkPurple = core.vec3f(0.28235, 0.17647, 0.28235)    // #482D48
 
 // Setup environment for the presentation
 function setup() {
-    core.debug("Setting up environment");>
+    core.debug("Setting up environment");
 
     // Az mount, atmosphere, landscape, no lines, labels or markers
     core.clear("natural");
@@ -115,7 +115,7 @@ function fastForward(rate, wait = "L", spec = "local") {
 }
 
 // Returns a date string from the Rise/Transit/Set of an object and current date
-function dateFromRTS(timeString) {>
+function dateFromRTS(timeString) {
     const date = core.getDate("local").substring(0, 10);
     const time = timeString.replace("h", ":").replace("m", ":00");
     return date + "T" + time;

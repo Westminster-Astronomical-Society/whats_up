@@ -250,7 +250,7 @@ function showConstellation(Const, showLines = true, showArt = true) {
     ConstellationMgr.setFlagArt(showArt);
 }
 
-// Tour an object: show constellation, zoom in, zoom out, return to initial view
+// Wrapper function to show an object, zoom in, and zoom out to initial view, optionally showing its constellation
 function objectGoTo(name, fov = 1, duration = 4, showConst = true) {
     var obj = core.getObjectInfo(name);
     

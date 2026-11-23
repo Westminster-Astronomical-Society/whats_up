@@ -211,57 +211,86 @@ function drawPointer(obj1Name, obj2Name, steps, colorHex) {
     }
 }
 
-// select constellation by name and display isolated (lines and art)
-function showConstellation(Const) {
-
-    ConstellationMgr.deselectConstellations();
-    ConstellationMgr.setFlagIsolateSelected(true);
-    ConstellationMgr.setFlagConstellationPick(true);
-
-    core.selectConstellationByName(Const);
-    ConstellationMgr.setFlagLines(true);
-    ConstellationMgr.setFlagArt(true);
-}
-
-// move to a selected object, zoom in and back out
-function goToAltAz(obj, duration = 4) {
+// Position view: zenith at center, 180 deg fov, optionally show constellation
+function goToAltAz(obj, duration = 4, showLines = false, showArt = false) {
     const az = obj["azimuth"];
-
-    // Move to object, initially zoomed out
+    
+    ConstellationMgr.deselectConstellations();
+    ConstellationMgr.setFlagLines(showLines);
+    ConstellationMgr.setFlagArt(showArt);
+    
+    if (showLines || showArt) {
+        ConstellationMgr.setFlagIsolateSelected(true);
+        ConstellationMgr.setFlagConstellationPick(true);
+        core.selectConstellationByName(obj["iauConstellation"]);
+    }
+    
     core.moveToAltAzi(90, az, duration);
     StelMovementMgr.zoomTo(180, duration);
     core.wait(duration);
 }
 
+// Zoom in/out on an object at a specified fov
 function zoomToObject(obj, fov, duration) {
     const shift = fov / 6;
-
-    // Zoom in (shift down for dome)
+    
     core.moveToObject(obj["name"], duration, shift);
     StelMovementMgr.zoomTo(fov, duration);
     core.wait(duration);
 }
 
-// wrapper function to go to an object, optionally showing its constellation
-function objectGoTo(name, fov = 1, duration = 4, Const = true) {
+// Select constellation by name and display isolated (lines and art)
+function showConstellation(Const, showLines = true, showArt = true) {
+    ConstellationMgr.deselectConstellations();
+    ConstellationMgr.setFlagIsolateSelected(true);
+    ConstellationMgr.setFlagConstellationPick(true);
+    
+    core.selectConstellationByName(Const);
+    ConstellationMgr.setFlagLines(showLines);
+    ConstellationMgr.setFlagArt(showArt);
+}
+
+// Tour an object: show constellation, zoom in, zoom out, return to initial view
+function objectGoTo(name, fov = 1, duration = 4, showConst = true) {
     var obj = core.getObjectInfo(name);
-
-    if (Const) {
-        showConstellation(obj["iauConstellation"]);
-    } else {
-        ConstellationMgr.deselectConstellations();
-        ConstellationMgr.setFlagLines(false);
-        ConstellationMgr.setFlagArt(false);
-    }
-
-    goToAltAz(obj, duration);
+    
+    goToAltAz(obj, duration, showConst, showConst);
     core.waitForKeypress();
-
+    
     zoomToObject(obj, fov, duration);
     ConstellationMgr.setFlagLines(false);
     ConstellationMgr.setFlagArt(false);
     core.waitForKeypress();
+    
+    goToAltAz(obj, duration);
+    core.waitForKeypress();
+}
 
+// Tour a constellation: show it, zoom to full view, tour objects, return to initial view
+function constellationTour(Const, fov = 60, duration = 4, boundaries = true, objects = null) {
+    var obj = core.getObjectInfo(Const);
+    
+    goToAltAz(obj, duration);
+    showConstellation(Const);
+    zoomToObject(obj, fov, duration);
+    
+    if (boundaries) {
+        ConstellationMgr.setFlagBoundaries(true);
+    }
+    
+    core.waitForKeypress();
+
+    if (objects) {
+        for (var i = 0; i < objects.length; i++) {
+            zoomToObject(core.getObjectInfo(objects[i]["name"]), objects[i]["fov"], duration);
+            core.waitForKeypress();
+            
+            zoomToObject(obj, fov, duration);
+            core.waitForKeypress();
+        }
+    }
+    
+    ConstellationMgr.setFlagBoundaries(false);
     goToAltAz(obj, duration);
     core.waitForKeypress();
 }

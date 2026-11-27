@@ -6,11 +6,11 @@ These examples require Stellarium 26.2 or later for the `core.waitForKeypress()`
 
 ## Usage
 
-Place the script in Stellarium's user scripts folder and load it from the scripts tab in the configuration window (F2) or the Scripting Console (F12).
+Place the script in Stellarium's user scripts folder and load it from the scripts tab in the configuration window (F2). You can open and run scripts from any location using the Scripting Console (F12).
 
-Specify the date and time, location, and landscape at the top of the script. It will call `setup()` from `settings.inc` to initialize the presentation.
+Specify the date and time, location, landscape, and skyculture at the top of the script. Location is specified using latitude and longitude so you don't have to worry about the name being in the database. Make sure the landscape and skyculture are available. Bear Branch 1 and Bear Branch 2 are installed on the planetarium computer. You can get them from the WASI Github repository [here](https://github.com/Westminster-Astronomical-Society/Stellarium_Landscapes).
 
-After initialization, you can use the provided functions to navigate the sky, highlight constellations, and draw pointers between celestial objects.
+The script will call `setup()` from `settings.inc` to initialize the presentation. After initialization, you can use the provided functions to navigate the sky, highlight constellations, and draw pointers between celestial objects.
 
 `drawPointer(obj1Name, obj2Name, steps = 40, colorHex = "#FF0000")` - Draws a line along a great circle arc between two named objects. Set the number of interpolation steps and the color of the line.
 
@@ -32,5 +32,7 @@ OriObjects = [
     {"name": "IC434", "fov": 4}
 ];
 ```
+
+These objects can be defined in the main script file or imported from another file such as `common_objects.inc` as needed.
 
 `what's_up_2026-12-12.ssc` - Example script file for the presentation on December 12, 2026.

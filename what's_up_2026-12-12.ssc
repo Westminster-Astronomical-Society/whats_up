@@ -212,12 +212,12 @@ core.waitForKeypress();
 
 // Tour of the Perseus constellation
 PerObjects = [ 
-    {"name": "C14", "fov": 2},
+    {"name": "C14", "fov": 3},
     {"name": "M34", "fov": 1.5},
     {"name": "M76", "fov": 0.5}
 ];
 
-constellationTour("Perseus", fov = 45, duration = 4, boundaries=true, objects=PerObjects);
+constellationTour("Perseus", fov = 55, duration = 4, boundaries=true, objects=PerObjects);
 
 // Tour of the Orion constellation
 OriObjects = [ 
